@@ -29,7 +29,7 @@ type Property = {
   image?: string;
 };
 
-type EquipementStatus = "active" | "maintenance" | "broken";
+type EquipementStatus = "active" | "maintenance" /*| "broken"*/;
 
 type Equipement = {
   id: string;
@@ -62,15 +62,15 @@ const STATUS_STYLES: Record<string, StatusStyle> = {
     className:
       "text-amber-600 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950/40 dark:border-amber-900/50",
   },
-  broken: {
+  /*broken: {
     label: "Broken",
     icon: CircleX,
     className:
       "text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-950/40 dark:border-red-900/50",
-  },
+  },*/
 };
 
-const STATUS_ORDER: EquipementStatus[] = ["active", "maintenance", "broken"];
+const STATUS_ORDER: EquipementStatus[] = ["active", "maintenance", /*"broken"*/];
 
 function StatusBadge({ status }: { status: string }) {
   const style = STATUS_STYLES[status] ?? STATUS_STYLES.active;
@@ -95,7 +95,7 @@ function StatusSwitcher({
   onChange: (status: EquipementStatus) => void;
 }) {
   return (
-    <div className="relative grid grid-cols-3 gap-1 rounded-md border border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="relative grid grid-cols-2 gap-1 rounded-md border border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-800 dark:bg-zinc-950">
       {STATUS_ORDER.map((option) => {
         const isActive = status === option;
         const style = STATUS_STYLES[option];
@@ -105,7 +105,7 @@ function StatusSwitcher({
             type="button"
             disabled={updating}
             onClick={() => onChange(option)}
-            className={`rounded px-2 py-1 text-xs font-medium capitalize transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+            className={`rounded cursor-pointer px-2 py-1 text-xs font-medium capitalize transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
               isActive
                 ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-100"
                 : "text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300"

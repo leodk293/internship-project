@@ -3,7 +3,7 @@ import React from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard - CASAHOST",
+  title: "Propriétés - CASAHOST",
 };
 
 export default function layout({

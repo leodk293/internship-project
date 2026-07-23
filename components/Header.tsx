@@ -12,10 +12,12 @@ export default async function Header() {
     data: { session },
   } = await supabase.auth.getSession();
 
+  //console.log(session);
+
   const NAV_LINKS = [
     { href: "#about", label: "À propos" },
     { href: "#contact", label: "Contact" },
-    { href: `/${session?.user?.id}/dashboard`, label: "Dashboard" },
+    { href: `/${session?.user?.id}/dashboard`, label: "Propriétés" },
   ];
   return (
     <header
@@ -79,9 +81,11 @@ export default async function Header() {
 
           <MobileNav
             navLinks={NAV_LINKS}
-            isAuthenticated={false}
-            userName="User"
-            avatarUrl={undefined}
+            isAuthenticated={
+              session?.user.role === "authenticated" ? true : false
+            }
+            userName={session?.user?.user_metadata.full_name}
+            avatarUrl={session?.user?.user_metadata.avatar_url}
           />
         </div>
       </div>
