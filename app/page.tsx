@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Sora, Manrope } from "next/font/google";
-import { Typewriter } from 'react-simple-typewriter'
+import { Typewriter } from "react-simple-typewriter";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -57,13 +57,27 @@ const HERO_LINE_1 = "Votre maison,";
 const HERO_LINE_2 = "elle s'occupe du reste.";
 
 export default function Home() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [sent, setSent] = useState(false);
+  const [result, setResult] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSent(true);
-  }
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    setResult("Sending....");
+    const formData = new FormData(event.target);
+    formData.append("access_key", `${process.env.NEXT_PUBLIC_WEB3FORMS}`);
+
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      setResult("Form Submitted Successfully");
+      event.target.reset();
+    } else {
+      setResult("Error");
+    }
+  };
 
   return (
     <div
@@ -171,7 +185,10 @@ export default function Home() {
       </section>
 
       {/* ================= QUI SOMMES-NOUS ================= */}
-      <section id="about" className="border-b border-gray-200 dark:border-white/10">
+      <section
+        id="about"
+        className="border-b border-gray-200 dark:border-white/10"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 grid lg:grid-cols-[1fr_1.2fr] gap-16 items-center">
           <div>
             <span className="text-xs font-semibold tracking-[0.2em] text-amber-600 dark:text-amber-400 uppercase">
@@ -302,8 +319,8 @@ export default function Home() {
           </div>
 
           <form
-            onSubmit={handleSubmit}
             className="rounded-2xl border border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-white/[0.03] p-8 space-y-5"
+            onSubmit={onSubmit}
           >
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
@@ -312,12 +329,13 @@ export default function Home() {
               <input
                 required
                 type="text"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                name="name"
+                aria-required
                 className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 dark:border-white/10 dark:bg-[#0b0f1a] dark:text-white dark:placeholder:text-gray-500 px-4 py-2.5 text-sm outline-none focus:border-amber-500 dark:focus:border-amber-400/50"
                 placeholder="Votre nom"
               />
             </div>
+
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
                 Email
@@ -325,12 +343,13 @@ export default function Home() {
               <input
                 required
                 type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                name="email"
+                aria-required
                 className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 dark:border-white/10 dark:bg-[#0b0f1a] dark:text-white dark:placeholder:text-gray-500 px-4 py-2.5 text-sm outline-none focus:border-amber-500 dark:focus:border-amber-400/50"
                 placeholder="vous@exemple.com"
               />
             </div>
+
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
                 Message
@@ -338,18 +357,21 @@ export default function Home() {
               <textarea
                 required
                 rows={4}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                name="message"
                 className="w-full resize-none rounded-lg border border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 dark:border-white/10 dark:bg-[#0b0f1a] dark:text-white dark:placeholder:text-gray-500 px-4 py-2.5 text-sm outline-none focus:border-amber-500 dark:focus:border-amber-400/50"
                 placeholder="Parlez-nous de votre projet"
               />
             </div>
+
             <button
               type="submit"
-              className="w-full rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 px-6 py-3 text-sm font-semibold text-gray-950 transition-transform hover:scale-[1.01]"
+              className="w-full cursor-pointer rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 px-6 py-3 text-sm font-semibold text-gray-950 transition-transform hover:scale-[1.01]"
             >
-              {sent ? "Message envoyé ✓" : "Envoyer le message"}
+              {result ? "Message envoyé ✓" : "Envoyer le message"}
             </button>
+
+            {/* <button type="submit">Submit Form</button>
+            <span>{result}</span> */}
           </form>
         </div>
       </section>
